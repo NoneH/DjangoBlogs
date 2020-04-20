@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>博客首页</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'css/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}" type="text/javascript"></script>
+
+</head>
+<body>
+<ul>
+    <table  class="table table-condensed">
+        <tr>
+            <td>博客名称</td>
+            <td>博客作者</td>
+            <td>发表时间</td>
+        </tr>
+    {% for all_blog in all_blogs %}
+        <tr class="success">
+            <td><a href="{% url 'blog_detail' all_blog.id %}">{{ all_blog.title }}</a></td>
+            <td>{{ all_blog.author }}</td>
+            <td>{{ all_blog.add_time }}</td>
+        </tr>
+    {% endfor %}
+
+    </table>
+
+{#    <li>首页第一行</li>#}
+</ul>
+</body>
+</html>

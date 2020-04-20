@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>博客详情</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'css/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}" type="text/javascript"></script>
+
+</head>
+<body class="lead">
+<div class="center">
+    <h2 class="center">{{ blog.title }} <small>这是标题</small></h2>
+    <span>作者：{{ blog.author }}</span>
+    <p class="lead center"><ins>{{ blog.content }}</ins></p>
+    <span>发表时间：{{ blog.add_time }}</span>
+
+</div>
+
+<div class="center">
+    <div id="js-pub-container" class="issques clearfix js-form">
+        <div class="wgt-ipt-wrap pub-editor-wrap " id="js-pl-input-fake">
+            <textarea id="js-pl-textarea" class="" placeholder="评论填写区域！" ></textarea>
+        </div>
+        <input type="button" id="js-pl-submit" class="pub-btn btn btn-success" data-cid="452" value="发表评论">
+        <p class="global-errortip js-global-error"></p>
+    </div>
+    <div id="course_note">
+        <ul class="mod-post" id="comment-list">
+{#                          评论展示#}
+        <h3>评论展示：</h3>
+            {% for comment in all_comments %}
+                <div class="comment-field" style="padding-top: 10px;">
+                    用户：{{ request.user.username }}&nbsp;&nbsp;&nbsp;评论: {{ comment.comments }}
+                </div>
+            {% endfor %}
+
+
+        </ul>
+    </div>
+</div>
+</body>
+    <script type="text/javascript">
+    //添加评论
+    $('#js-pl-submit').on('click', function(){
+        var comments = $("#js-pl-textarea").val();
+        if(comments == ""){
+            alert("评论不能为空");
+            return
+        }
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url:"{% url 'add_comment' %}",
+            data:{'blog_id':{{ blog.id }}, 'comments':comments},
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function(data) {
+                if(data.status == 'fail'){
+                    if(data.msg == '用户未登录'){
+                        {#window.location.href="login.html";#}
+                    }else{
+                        alert(data.msg)
+                    }
+
+                }else if(data.status == 'success'){
+                    window.location.reload();//刷新当前页面.
+                }
+            },
+        });
+    });
+
+</script>
+</html>
